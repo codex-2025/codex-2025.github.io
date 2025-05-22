@@ -16,7 +16,7 @@
   <style>
     /* Section padding (matches Nerfies) */
     section.hero, section.section {padding-top:2rem; padding-bottom:2rem;}
-    section.hero.is-white        {padding-top:1.25rem; padding-bottom:1.25rem;}
+    section.hero.is-white        {padding-top:1.25rem; padding-bottom:0rem;}
 
     /* Title → author breathing room */
     h1.title.is-1 {margin-bottom:2rem;}      /* a touch more than Bulma default */
@@ -38,17 +38,32 @@
 
     /* Disabled button style */
     .disabled-btn {pointer-events:none; opacity:0.6;}
+
+    #teaser {
+      display: block;
+      margin: 0 auto;
+      width: 70%;
+      height: auto;
+    }
+
+    /* on phones, still go full‑bleed */
+    @media (max-width: 1440px) {
+      #teaser {
+        width: 100%;
+        min-width: auto;
+      }
+    }
   </style>
 </head>
 <body>
 <!-- ───────────────── NAVBAR (minimal) ───────────────── -->
-<nav class="navbar" role="navigation" aria-label="main navigation">
+<!-- <nav class="navbar" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
     <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
       <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
     </a>
   </div>
-</nav>
+</nav> -->
 
 <!-- ───────────────── TITLE HERO ───────────────── -->
 <section class="hero is-white">
@@ -71,11 +86,19 @@
 <!-- ───────────────── TEASER VIDEO ───────────────── -->
 <section class="hero" id="teaser-section" style="padding-top:0; padding-bottom:0;">
   <div class="hero-body" style="padding-top:0.5rem; padding-bottom:1rem;">
+    <video
+      id="teaser"
+      autoplay
+      muted
+      loop
+      playsinline
+    >
+      <source src="./static/videos/side_by_side.mp4" type="video/mp4">
+    </video>
     <div class="container is-max-desktop">
-      <video id="teaser" autoplay muted loop playsinline style="width:100%;">
-        <source src="./static/videos/all_rollouts.mp4" type="video/mp4">
-      </video>
-      <h2 class="subtitle has-text-centered mt-4">CoDex combines VLM guidance and online simulated learning to let robots autonomously master complex functional object manipulation skills without human demos.</h2>
+      <h2 class="subtitle has-text-centered mt-4">
+        CoDex combines VLM guidance and online simulated learning to let robots autonomously master complex functional object manipulation skills without human demos.
+      </h2>
     </div>
   </div>
 </section>
