@@ -261,7 +261,7 @@
     <div class="container is-max-desktop">
       <h2 class="title is-4 has-text-centered">Why is Functional Object Manipulation challenging?</h2>
       <p class="subtitle is-5 has-text-centered is-italic">"Robots can pick and place, but can they <strong>use</strong> a spray bottle or a glue‑gun?"</p>
-      <video autoplay muted loop playsinline style="width:100%;">
+      <video autoplay muted loop playsinline controls style="width:100%;">
         <source src="./static/videos/intro.mp4" type="video/mp4" />
       </video>
 
@@ -276,13 +276,13 @@
       <h2 class="title is-3 has-text-centered"><span class="has-text-primary">CoDex</span>: Learning Compositional Dexterous Functional Manipulation without Demonstrations</h2>
 
       <h3 class="title is-4">Stage 1 — VLM‑Generated Semantic Guidance</h3>
-      <video autoplay muted loop playsinline style="width:100%;">
+      <video autoplay muted loop playsinline controls style="width:100%;">
         <source src="./static/videos/method_part1.mp4" type="video/mp4" />
       </video>
       <p class="mt-3">We parse a single RGB‑D snapshot and task text through a VLM to segment the scene, reconstruct the tool mesh, and label the Actuation and Function points. Our VLM‑guided Cross‑Entropy Method then proposes goal poses that satisfy both language constraints and simple physics checks.</p>
 
       <h3 class="title is-4 mt-5">Stage 2 — VLM‑Guided Policy Training</h3>
-      <video autoplay muted loop playsinline style="width:100%;">
+      <video autoplay muted loop playsinline controls style="width:100%;">
         <source src="./static/videos/method_part2.mp4" type="video/mp4" />
       </video>
       <p class="mt-3">We generate candidate grasps that remain stable while enabling actuation, then run one hour of RL in ManiSkill3 (2 048 parallel worlds) to refine them into a single motion primitive that completes <em>grasp–move–actuate</em> end‑to‑end.</p>
