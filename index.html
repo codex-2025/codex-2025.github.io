@@ -281,7 +281,7 @@
       <video autoplay muted loop playsinline style="width:100%;">
         <source src="./static/videos/method_part2.mp4" type="video/mp4" />
       </video>
-      <p class="mt-3">We generate candidate grasps that remain stable while enabling actuation, then run one hour of RL in ManiSkill3 (2 048 parallel worlds) to refine them into a single motion primitive that completes <em>grasp–move–actuate</em> end‑to‑end.</p>
+      <p class="mt-3">We generate candidate grasps that remain stable while enabling actuation, then run one hour of RL in ManiSkill3 (2 048 parallel envs) to refine them into a single motion primitive that completes <em>grasp–move–actuate</em> end‑to‑end.</p>
 
       <h3 class="title is-4 mt-5">Stage 3 — Real‑world Execution</h3>
       <p class="mb-4">The learned primitive transfers directly to a Franka arm with a Leap hand, executing the full pipeline on unseen objects without any additional tuning.</p>
