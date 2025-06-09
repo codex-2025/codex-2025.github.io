@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CoDex – Compositional Dexterous Functional Manipulation without Demonstrations</title>
+  <title>CoDex – Learning Compositional Dexterous Functional Manipulation without Demonstrations</title>
 
   <!-- Google fonts & Bulma CSS -->
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet" />
@@ -23,6 +23,10 @@
     section.hero.is-white {
       padding-top: 1.25rem;
       padding-bottom: 0rem;
+    }
+
+    .has-text-primary {
+      color: #F3934F !important;
     }
 
     /* Title → author breathing room */
@@ -217,7 +221,7 @@
   <section class="hero is-white">
     <div class="hero-body">
       <div class="container has-text-centered is-max-desktop">
-        <h1 class="title is-1"><span class="has-text-primary">CoDex</span>: Compositional Dexterous Functional Manipulation without Demonstrations</h1>
+        <h1 class="title is-1"><span class="has-text-primary">CoDex</span>: Learning Compositional Dexterous Functional Manipulation without Demonstrations</h1>
         <p class="subtitle is-4">Anonymous</p>
         <div class="buttons is-centered">
           <a href="./corl_submission_full.pdf" class="button is-dark is-rounded"><span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper</span></a>
@@ -231,7 +235,7 @@
   <section class="section" id="teaser-section">
     <div class="container is-max-desktop has-text-centered">
       <video id="teaser" autoplay muted loop playsinline>
-        <source src="./static/videos/side_by_side.mp4" type="video/mp4" />
+        <source src="./static/videos/plant.mp4" type="video/mp4" />
       </video>
       <p class="mt-4">CoDex combines VLM guidance and online simulated learning to let robots autonomously master complex functional object manipulation skills without human demos.</p>
     </div>
@@ -257,7 +261,7 @@
     <div class="container is-max-desktop">
       <h2 class="title is-4 has-text-centered">Why is Functional Object Manipulation challenging?</h2>
       <p class="subtitle is-5 has-text-centered is-italic">"Robots can pick and place, but can they <strong>use</strong> a spray bottle or a glue‑gun?"</p>
-      <video autoplay muted loop playsinline style="width:100%;">
+      <video autoplay muted loop playsinline controls style="width:100%;">
         <source src="./static/videos/intro.mp4" type="video/mp4" />
       </video>
 
@@ -269,19 +273,19 @@
   <!-- ───────────────── METHOD (Stages) ───────────────── -->
   <section class="section mt-5" id="method">
     <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered"><span class="has-text-primary">CoDex</span>: Compositional Dexterous Functional Manipulation without Demonstrations</h2>
+      <h2 class="title is-3 has-text-centered"><span class="has-text-primary">CoDex</span>: Learning Compositional Dexterous Functional Manipulation without Demonstrations</h2>
 
       <h3 class="title is-4">Stage 1 — VLM‑Generated Semantic Guidance</h3>
-      <video autoplay muted loop playsinline style="width:100%;">
+      <video autoplay muted loop playsinline controls style="width:100%;">
         <source src="./static/videos/method_part1.mp4" type="video/mp4" />
       </video>
       <p class="mt-3">We parse a single RGB‑D snapshot and task text through a VLM to segment the scene, reconstruct the tool mesh, and label the Actuation and Function points. Our VLM‑guided Cross‑Entropy Method then proposes goal poses that satisfy both language constraints and simple physics checks.</p>
 
       <h3 class="title is-4 mt-5">Stage 2 — VLM‑Guided Policy Training</h3>
-      <video autoplay muted loop playsinline style="width:100%;">
+      <video autoplay muted loop playsinline controls style="width:100%;">
         <source src="./static/videos/method_part2.mp4" type="video/mp4" />
       </video>
-      <p class="mt-3">We generate candidate grasps that remain stable while enabling actuation, then run one hour of RL in ManiSkill3 (2 048 parallel envs) to refine them into a single motion primitive that completes <em>grasp–move–actuate</em> end‑to‑end.</p>
+      <p class="mt-3">We generate candidate grasps that remain stable while enabling actuation, then run one hour of RL in ManiSkill3 (2 048 parallel worlds) to refine them into a single motion primitive that completes <em>grasp–move–actuate</em> end‑to‑end.</p>
 
       <h3 class="title is-4 mt-5">Stage 3 — Real‑world Execution</h3>
       <p class="mb-4">The learned primitive transfers directly to a Franka arm with a Leap hand, executing the full pipeline on unseen objects without any additional tuning.</p>
@@ -313,7 +317,7 @@
         <button class="carousel-arrow left" id="prev-video">
           <i class="fas fa-chevron-left"></i>
         </button>
-        <video id="exp-video" controls muted playsinline>
+        <video id="exp-video" controls playsinline autoplay>
           <source src="./static/videos/plant.mp4" type="video/mp4">
         </video>
         <button class="carousel-arrow right" id="next-video">
@@ -381,7 +385,7 @@
         </tbody>
       </table>
       
-      <p class="mt-5">CoDex achieved 60% holistic task success and 90% grasp stability during execution. Failures, concentrated primarily on the challenging illuminate toy and grind salt tasks, highlight remaining complexities in integrating semantic goals with physical execution for these demanding FOM tasks.</p>
+      <p class="mt-5">CoDex achieved 60% holistic task success and 90% grasp stability during execution, demonstrating robust sim‑to‑real transfer and high reliability across a variety of functional objects. Failures—concentrated primarily on the challenging illuminate toy and grind salt tasks—highlight the remaining complexities in aligning semantic goals with precise physical execution for these demanding FOM scenarios.</p>
     </div>
   </section>
 
