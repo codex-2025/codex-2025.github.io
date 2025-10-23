@@ -188,31 +188,15 @@
       cursor: not-allowed;
     }
 
-    .carousel-arrow.left {
-      left: -25px;
-    }
+    .carousel-arrow.left { left: -25px; }
+    .carousel-arrow.right { right: -25px; }
 
-    .carousel-arrow.right {
-      right: -25px;
-    }
-
-    #exp-video {
-      width: 100%;
-      max-width: 100%;
-    }
+    #exp-video { width: 100%; max-width: 100%; }
 
     @media (max-width: 768px) {
-      .carousel-arrow {
-        width: 40px;
-        height: 40px;
-        font-size: 16px;
-      }
-      .carousel-arrow.left {
-        left: 10px;
-      }
-      .carousel-arrow.right {
-        right: 10px;
-      }
+      .carousel-arrow { width: 40px; height: 40px; font-size: 16px; }
+      .carousel-arrow.left { left: 10px; }
+      .carousel-arrow.right { right: 10px; }
     }
   </style>
 </head>
@@ -224,7 +208,7 @@
         <h1 class="title is-1"><span class="has-text-primary">CoDex</span>: Learning Compositional Dexterous Functional Manipulation without Demonstrations</h1>
         <p class="subtitle is-4">Anonymous</p>
         <div class="buttons is-centered">
-          <a href="./corl_submission_full.pdf" class="button is-dark is-rounded"><span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper</span></a>
+          <a href="./ICRA26_CoDex.pdf" class="button is-dark is-rounded"><span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper</span></a>
           <a class="button is-dark is-rounded is-static"><span class="icon"><i class="fab fa-github"></i></span><span>Code (Coming Soon)</span></a>
         </div>
       </div>
@@ -237,7 +221,7 @@
       <video id="teaser" autoplay muted loop playsinline>
         <source src="./static/videos/plant_speed_up.mp4" type="video/mp4" />
       </video>
-      <p class="mt-4">CoDex combines VLM guidance and online simulated learning to let robots autonomously master complex functional object manipulation skills without human demos.</p>
+      <p class="mt-4">CoDex translates VLM guidance into semantic constraints and uses constrained optimization + RL in simulation to master complex functional object manipulation without human demos.</p>
     </div>
   </section>
 
@@ -245,14 +229,14 @@
   <section class="abstract-section">
     <div class="container is-max-desktop">
       <h2 class="title is-3 has-text-centered">TL;DR</h2>
-      <p><strong>Why care?</strong> CoDex learns dexterous grasp–move–actuate skills for functional object manipulation (FOM) <em>without any human demonstrations</em>.</p>
+      <p><strong>Why care?</strong> CoDex learns dexterous <em>grasp–move–actuate</em> skills for functional object manipulation (FOM) <em>without any human demonstrations</em>.</p>
       <p><strong>How we do it:</strong></p>
       <ol style="margin-left:1.25rem;">
-        <li>Query the VLM where the tool should be placed (<em>global guidance</em>) and which part to be actuated (<em>local guidance</em>).</li>
-        <li>A constrained optimiser finds functional grasps that remain stable <em>and</em> satisfy the actuation requirement.</li>
-        <li>One hour of RL in simulation turns those grasps into a motion primitive policy that transfers directly to a Franka + Leap hand.</li>
+        <li><strong>VLM → Semantic Constraints:</strong> From a single RGB‑D view and a task prompt, a VLM yields <em>local</em> (actuation/function points & directions) and a <em>global</em> goal pose via <em>VLM‑CEM</em>.</li>
+        <li><strong>Analytic Constrained Optimization:</strong> Enforce those constraints to synthesize functional, stable grasp candidates with collision avoidance and force‑closure guarantees.</li>
+        <li><strong>Constraint‑Guided RL:</strong> In <em>ManiSkill3</em> with 2,048 parallel worlds (~1 hour), refine candidates into a parameterized motion‑primitive policy that composes grasp, motion, and actuation and transfers to a Franka + LEAP hand.</li>
       </ol>
-      <p><strong>What CoDex achieves:</strong> On six unseen tools with different internal actuation mechanisms, the policy reaches 90% grasp stability and 60% holistic success.</p>
+      <p><strong>What CoDex achieves:</strong> <em>73%</em> overall success across six real‑world CD‑FOM tasks, outperforming <em>Analytical+VLM‑CEM</em> (33%) and <em>RL+PIVOT</em> (0%).</p>
     </div>
   </section>
 
@@ -265,8 +249,8 @@
         <source src="./static/videos/intro.mp4" type="video/mp4" />
       </video>
 
-      <p class="mt-4"><strong>The challenge.</strong> Functional Object Manipulation (FOM) tasks demand dexterous grasps that let a robot reposition an object <em>and</em> actuate its internal mechanism—often using the same fingers that keep the object stable.</p>
-      <p><strong>Why it's hard?</strong> Success hinges on a tight coupling between high‑level semantic context (which object, where to aim, how to operate it) and low‑level physical dexterity (contact choice, in‑hand force control, collision‑free motion). CoDex bridges that gap by letting a Vision‑Language Model supply the semantics while simulation‑based optimisation and RL supply the dexterity.</p>
+      <p class="mt-4"><strong>The challenge.</strong> CD‑FOM tasks demand coordinated control over <em>internal</em> (buttons, triggers) and <em>external</em> (object pose) DoF so the effect lands on the right target.</p>
+      <p><strong>Our bridge.</strong> We let a VLM provide <em>semantics</em> (what to actuate, where to aim) and translate them into <em>semantic constraints</em> that drive analytic optimization and RL to achieve <em>physical dexterity</em> (functional contacts, stable grasps, collision‑free motion).</p>
     </div>
   </section>
 
@@ -275,41 +259,29 @@
     <div class="container is-max-desktop">
       <h2 class="title is-3 has-text-centered"><span class="has-text-primary">CoDex</span>: Learning Compositional Dexterous Functional Manipulation without Demonstrations</h2>
 
-      <h3 class="title is-4">Stage 1 — VLM‑Generated Semantic Guidance</h3>
+      <h3 class="title is-4">Stage 1 — VLM‑Generated Semantic Constraints</h3>
       <video autoplay muted loop playsinline controls style="width:100%;">
         <source src="./static/videos/method_part1.mp4" type="video/mp4" />
       </video>
-      <p class="mt-3">We parse a single RGB‑D snapshot and task text through a VLM to segment the scene, reconstruct the tool mesh, and label the Actuation and Function points. Our VLM‑guided Cross‑Entropy Method then proposes goal poses that satisfy both language constraints and simple physics checks.</p>
+      <p class="mt-3">We parse (language, RGB‑D) to (i) segment and reconstruct the tool, (ii) locate the <em>Actuation</em> and <em>Function</em> points and directions, and (iii) derive a <em>global</em> goal pose via <strong>VLM‑CEM</strong>—an iterative, keypoint‑anchored pose search guided by VLM scoring.</p>
 
-      <h3 class="title is-4 mt-5">Stage 2 — VLM‑Guided Policy Training</h3>
+      <h3 class="title is-4 mt-5">Stage 2 — Constraint‑Guided Policy Training</h3>
       <video autoplay muted loop playsinline controls style="width:100%;">
         <source src="./static/videos/method_part2.mp4" type="video/mp4" />
       </video>
-      <p class="mt-3">We generate candidate grasps that remain stable while enabling actuation, then run one hour of RL in ManiSkill3 (2 048 parallel worlds) to refine them into a single motion primitive that completes <em>grasp–move–actuate</em> end‑to‑end.</p>
+      <p class="mt-3"><strong>Analytic constrained optimization</strong> turns local constraints into function‑aligned, stable grasp candidates; then <strong>constraint‑guided RL</strong> in ManiSkill3 refines them into a single motion primitive that completes <em>grasp–move–actuate</em> end‑to‑end.</p>
 
       <h3 class="title is-4 mt-5">Stage 3 — Real‑world Execution</h3>
-      <p class="mb-4">The learned primitive transfers directly to a Franka arm with a Leap hand, executing the full pipeline on unseen objects without any additional tuning.</p>
+      <p class="mb-4">The learned primitive transfers directly to a FRANKA arm with a LEAP hand, executing the full pipeline on unseen objects without task‑specific demonstrations or tuning.</p>
       
       <!-- Real-world experiments with text buttons -->
       <div class="task-buttons mb-4">
-        <button class="task-button active" data-video="plant" data-status="success">
-          Spray the plant
-        </button>
-        <button class="task-button" data-video="hot_glue" data-status="success">
-          Glue the wood blocks
-        </button>
-        <button class="task-button" data-video="whiteboard" data-status="success">
-          Spray the whiteboard
-        </button>
-        <button class="task-button" data-video="keyboard" data-status="success">
-          Clean the keyboard
-        </button>
-        <button class="task-button" data-video="sloth" data-status="failure">
-          Illuminate the sloth
-        </button>
-        <button class="task-button" data-video="salt" data-status="failure">
-          Add salt to the beans
-        </button>
+        <button class="task-button active" data-video="plant" data-status="success">Spray the plant</button>
+        <button class="task-button" data-video="hot_glue" data-status="success">Glue the wood blocks</button>
+        <button class="task-button" data-video="whiteboard" data-status="success">Spray the whiteboard</button>
+        <button class="task-button" data-video="keyboard" data-status="success">Clean the keyboard</button>
+        <button class="task-button" data-video="sloth" data-status="failure">Illuminate the toy</button>
+        <button class="task-button" data-video="salt" data-status="failure">Grind salt</button>
       </div>
       
       <!-- Video player with carousel arrows -->
@@ -331,151 +303,109 @@
   <section class="section" id="results">
     <div class="container is-max-desktop">
       <h2 class="title is-3 has-text-centered">Quantitative Results</h2>
-      <p class="mb-5 has-text-centered">CoDex performance across six Compositional Dexterous Functional Manipulation Tasks (Successes / 5 Trials)</p>
-      
+      <p class="mb-5 has-text-centered">Real‑world performance across six CD‑FOM tasks (5 trials each). The bottom row averages correspond to the overall success for each method.</p>
+
+      <!-- Merged table: overall + per‑task holistic success -->
       <table>
         <thead>
           <tr>
-            <th>Metric</th>
-            <th>Illuminate toy</th>
-            <th>Spray whiteboard</th>
-            <th>Spray plant</th>
-            <th>Clean keyboard</th>
-            <th>Glue blocks</th>
-            <th>Grind salt</th>
+            <th>Task</th>
+            <th>CoDex (Ours)</th>
+            <th>Analytical + VLM‑CEM</th>
+            <th>RL+PIVOT</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Stable Grasp</td>
-            <td>4/5</td>
-            <td>5/5</td>
-            <td>5/5</td>
-            <td>4/5</td>
-            <td>5/5</td>
-            <td>4/5</td>
-          </tr>
-          <tr>
-            <td>Successful Movement</td>
-            <td>1/5</td>
-            <td>5/5</td>
-            <td>5/5</td>
-            <td>3/5</td>
-            <td>5/5</td>
-            <td>3/5</td>
-          </tr>
-          <tr>
-            <td>Correct Actuation</td>
-            <td>0/5</td>
-            <td>5/5</td>
-            <td>5/5</td>
-            <td>4/5</td>
-            <td>5/5</td>
-            <td>0/5</td>
-          </tr>
-          <tr class="total-row">
-            <td>Holistic Success</td>
-            <td>0/5</td>
-            <td>5/5</td>
-            <td>5/5</td>
-            <td>3/5</td>
-            <td>5/5</td>
-            <td>0/5</td>
-          </tr>
+          <tr><td>Spray whiteboard</td><td>5/5 (100%)</td><td>5/5 (100%)</td><td>0/5 (0%)</td></tr>
+          <tr><td>Spray plant</td><td>5/5 (100%)</td><td>5/5 (100%)</td><td>0/5 (0%)</td></tr>
+          <tr><td>Clean keyboard</td><td>3/5 (60%)</td><td>0/5 (0%)</td><td>0/5 (0%)</td></tr>
+          <tr><td>Illuminate toy</td><td>0/5 (0%)</td><td>0/5 (0%)</td><td>0/5 (0%)</td></tr>
+          <tr><td>Glue blocks</td><td>5/5 (100%)</td><td>0/5 (0%)</td><td>0/5 (0%)</td></tr>
+          <tr><td>Grind salt</td><td>4/5 (80%)</td><td>0/5 (0%)</td><td>0/5 (0%)</td></tr>
+          <tr class="total-row"><td>Average (Overall)</td><td>22/30 (73%)</td><td>10/30 (33%)</td><td>0/30 (0%)</td></tr>
         </tbody>
       </table>
-      
-      <p class="mt-5">CoDex achieved 60% holistic task success and 90% grasp stability during execution, demonstrating robust sim‑to‑real transfer and high reliability across a variety of functional objects. Failures—concentrated primarily on the challenging illuminate toy and grind salt tasks—highlight the remaining complexities in aligning semantic goals with precise physical execution for these demanding FOM scenarios.</p>
+
+      <p class="mt-4">CoDex reliably solves the two spray tasks and hot‑glue, with partial degradation on <em>Clean keyboard</em> and a full failure on <em>Illuminate toy</em>. Baselines mirror the composition plot: Analytical+VLM‑CEM succeeds only on the two sprays, and RL+PIVOT achieves no holistic success despite frequent correct actuations.</p>
+
+      <figure class="image mt-5">
+        <img src="./static/images/composition_codex_vs_baseline.png" alt="Overall and partial success composition across six CD‑FOM tasks for CoDex, Analytical + VLM‑CEM, and RL+PIVOT" />
+        <figcaption class="has-text-centered is-size-7 mt-1">
+          Overall success on six CD‑FOM tasks (5 real‑world trials each). Solid = success; shaded = partial (movement‑only or actuation‑only). CoDex reaches 73% overall, outperforming Analytical + VLM‑CEM (33%) and RL+PIVOT (0%).
+        </figcaption>
+      </figure>
     </div>
   </section>
 
-<!-- ───────────────── FOOTER ───────────────── -->
-<footer class="footer">
-  <div class="content has-text-centered">
-    <p>Site template adapted from <a href="https://nerfies.github.io">Nerfies</a>.</p>
-  </div>
-</footer>
+  <!-- ───────────────── FOOTER ───────────────── -->
+  <footer class="footer">
+    <div class="content has-text-centered">
+      <p>Site template adapted from <a href="https://nerfies.github.io">Nerfies</a>.</p>
+    </div>
+  </footer>
 
-<!-- ───────────────── SCRIPTS ───────────────── -->
-<script>
-  // Navbar burger toggle
-  document.addEventListener('DOMContentLoaded', () => {
-    const burger = document.querySelector('.navbar-burger');
-    if (burger) burger.addEventListener('click', () => burger.classList.toggle('is-active'));
-  });
-
-  // Video data and controls
-  const videoData = [
-    { key: 'plant', name: 'Spray the plant', status: 'success' },
-    { key: 'hot_glue', name: 'Glue the wood blocks', status: 'success' },
-    { key: 'whiteboard', name: 'Spray the whiteboard', status: 'success' },
-    { key: 'keyboard', name: 'Clean the keyboard', status: 'success' },
-    { key: 'sloth', name: 'Illuminate the sloth', status: 'failure' },
-    { key: 'salt', name: 'Add salt to the beans', status: 'failure' }
-  ];
-
-  const videoMap = {
-    plant:      './static/videos/plant.mp4',
-    hot_glue:   './static/videos/hot_glue.mp4',
-    whiteboard: './static/videos/whiteboard.mp4',
-    keyboard:   './static/videos/keyboard.mp4',
-    sloth:      './static/videos/sloth.mp4',
-    salt:       './static/videos/salt.mp4'
-  };
-
-  let currentVideoIndex = 0;
-  const taskButtons = document.querySelectorAll('.task-button');
-  const expVideo = document.getElementById('exp-video');
-  const prevButton = document.getElementById('prev-video');
-  const nextButton = document.getElementById('next-video');
-
-  // Function to update video and active button
-  function updateVideo(index) {
-    currentVideoIndex = index;
-    
-    // Update active button
-    taskButtons.forEach((btn, i) => {
-      btn.classList.toggle('active', i === index);
+  <!-- ───────────────── SCRIPTS ───────────────── -->
+  <script>
+    // Navbar burger toggle
+    document.addEventListener('DOMContentLoaded', () => {
+      const burger = document.querySelector('.navbar-burger');
+      if (burger) burger.addEventListener('click', () => burger.classList.toggle('is-active'));
     });
-    
-    // Update video
-    const videoKey = videoData[index].key;
-    const videoPath = videoMap[videoKey];
-    
-    if (videoPath) {
-      expVideo.pause();
-      expVideo.querySelector('source').src = videoPath;
-      expVideo.load();
-      expVideo.play();
-    }
-    
-    // Update arrow button states
-    prevButton.disabled = index === 0;
-    nextButton.disabled = index === videoData.length - 1;
-  }
 
-  // Task button click handlers
-  taskButtons.forEach((button, index) => {
-    button.addEventListener('click', () => {
-      updateVideo(index);
+    // Video data and controls
+    const videoData = [
+      { key: 'plant', name: 'Spray the plant', status: 'success' },
+      { key: 'hot_glue', name: 'Glue the wood blocks', status: 'success' },
+      { key: 'whiteboard', name: 'Spray the whiteboard', status: 'success' },
+      { key: 'keyboard', name: 'Clean the keyboard', status: 'success' },
+      { key: 'sloth', name: 'Illuminate the toy', status: 'failure' },
+      { key: 'salt', name: 'Grind salt', status: 'failure' }
+    ];
+
+    const videoMap = {
+      plant:      './static/videos/plant.mp4',
+      hot_glue:   './static/videos/hot_glue.mp4',
+      whiteboard: './static/videos/whiteboard.mp4',
+      keyboard:   './static/videos/keyboard.mp4',
+      sloth:      './static/videos/sloth.mp4',
+      salt:       './static/videos/salt.mp4'
+    };
+
+    let currentVideoIndex = 0;
+    const taskButtons = document.querySelectorAll('.task-button');
+    const expVideo = document.getElementById('exp-video');
+    const prevButton = document.getElementById('prev-video');
+    const nextButton = document.getElementById('next-video');
+
+    function updateVideo(index) {
+      currentVideoIndex = index;
+      taskButtons.forEach((btn, i) => btn.classList.toggle('active', i === index));
+      const videoKey = videoData[index].key;
+      const videoPath = videoMap[videoKey];
+      if (videoPath) {
+        expVideo.pause();
+        expVideo.querySelector('source').src = videoPath;
+        expVideo.load();
+        expVideo.play();
+      }
+      prevButton.disabled = index === 0;
+      nextButton.disabled = index === videoData.length - 1;
+    }
+
+    taskButtons.forEach((button, index) => {
+      button.addEventListener('click', () => updateVideo(index));
     });
-  });
 
-  // Carousel arrow handlers
-  prevButton.addEventListener('click', () => {
-    if (currentVideoIndex > 0) {
-      updateVideo(currentVideoIndex - 1);
-    }
-  });
+    prevButton.addEventListener('click', () => {
+      if (currentVideoIndex > 0) updateVideo(currentVideoIndex - 1);
+    });
 
-  nextButton.addEventListener('click', () => {
-    if (currentVideoIndex < videoData.length - 1) {
-      updateVideo(currentVideoIndex + 1);
-    }
-  });
+    nextButton.addEventListener('click', () => {
+      if (currentVideoIndex < videoData.length - 1) updateVideo(currentVideoIndex + 1);
+    });
 
-  // Initialize first video
-  updateVideo(0);
-</script>
+    // Initialize first video
+    updateVideo(0);
+  </script>
 </body>
 </html>
